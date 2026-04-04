@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>לומדים אנגלית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Heebo',sans-serif;background:#0d1117;color:#e0e0e0;min-height:100vh;overflow-x:hidden}
+.eng{font-family:'Heebo',sans-serif;direction:ltr;unicode-bidi:isolate}
+.hide{display:none!important}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 0 0 rgba(66,133,244,0.4)}50%{box-shadow:0 0 12px 4px rgba(66,133,244,0.2)}}
+
+/* LAYOUT */
+.app{max-width:500px;margin:0 auto;padding:16px}
+
+/* HEADER */
+.hdr{text-align:center;padding:16px 0 8px}
+.hdr h1{font-size:26px;font-weight:900;background:linear-gradient(135deg,#4285F4,#34A853,#EA4335);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr p{font-size:12px;color:#666;margin-top:4px}
+.prog-wrap{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
+.prog-bar{width:100px;height:6px;border-radius:99px;background:#ffffff11;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#4285F4,#34A853);transition:width .5s}
+.prog-txt{font-size:10px;color:#555}
+.voice-info{font-size:11px;margin-top:6px;min-height:16px}
+
+/* CATEGORY GRID */
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;animation:fadeIn .4s ease}
+.cat{border-radius:14px;padding:16px;text-align:right;cursor:pointer;transition:transform .2s;border:2px solid transparent;-webkit-user-select:none}
+.cat:active{transform:scale(.97)}
+.cat-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cat-icon{font-size:24px}
+.cat-cnt{font-size:11px;opacity:.5}
+.cat-name{font-size:15px;font-weight:700;margin-bottom:8px}
+.cat-bar{width:100%;height:6px;border-radius:99px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:99px;transition:width .4s}
+.cat-pct{font-size:10px;opacity:.4;margin-top:2px}
+
+/* INNER PAGE */
+.inner-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+.back-btn{font-size:20px;opacity:.5;cursor:pointer;background:none;border:none;color:#e0e0e0;padding:8px}
+.inner-title{display:flex;align-items:center;gap:6px}
+.inner-title h2{font-size:18px;font-weight:700}
+
+/* TABS */
+.tabs{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.tab{padding:7px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #ffffff11;background:transparent;color:#555;transition:all .2s}
+.tab.on{border-color:currentColor}
+
+/* SPEAKER BUTTON */
+.spk{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid;transition:all .15s;flex-shrink:0;background:transparent;font-size:14px;-webkit-user-select:none}
+.spk:active{transform:scale(.9)}
+.spk.lg{width:42px;height:42px;font-size:18px}
+.spk.on{animation:pulseGlow 1s ease infinite}
+
+/* WORD LIST */
+.wlist{display:flex;flex-direction:column;gap:6px;animation:fadeIn .3s ease}
+.witem{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:10px}
+.wleft{display:flex;align-items:center;gap:6px;min-width:0}
+.weng{font-size:20px;font-weight:700;white-space:nowrap;direction:ltr}
+.wphon{font-size:10px;color:#777;white-space:nowrap;direction:ltr}
+.wheb{font-weight:500;color:#bbb;font-size:13px;text-align:left;flex-shrink:0}
+
+/* FLASHCARD */
+.fc{display:flex;flex-direction:column;align-items:center;gap:14px;animation:fadeIn .3s ease}
+.fc-count{font-size:12px;color:#777}
+.fc-card{width:270px;min-height:220px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;cursor:pointer;transition:all .3s;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.fc-card:active{transform:scale(.98)}
+.fc-eng{font-size:36px;font-weight:700;direction:ltr}
+.fc-hint{color:#777;font-size:12px;margin-top:12px}
+.fc-phon{font-size:16px;margin-top:6px;direction:ltr}
+.fc-heb{font-size:19px;font-weight:700;color:#fff;margin-top:6px}
+.fc-btns{display:flex;gap:8px;animation:fadeIn .25s ease}
+.fc-btn{padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;border:1px solid}
+.fc-btn:active{transform:scale(.95)}
+.fc-btn.yes{background:#51cf6622;color:#51cf66;border-color:#51cf6633}
+.fc-btn.no{background:#ff4d4d22;color:#ff6b6b;border-color:#ff4d4d33}
+
+/* QUIZ */
+.quiz{display:flex;flex-direction:column;align-items:center;gap:12px;animation:fadeIn .3s ease}
+.q-dots{display:flex;gap:4px}
+.q-dot{width:10px;height:10px;border-radius:50%}
+.q-prompt{color:#888;font-size:12px}
+.q-eng{font-size:34px;font-weight:700;direction:ltr}
+.q-phon{font-size:12px;color:#777;direction:ltr}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px;margin-top:4px}
+.q-opt{padding:12px;border-radius:10px;text-align:center;font-weight:700;font-size:14px;cursor:pointer;color:#fff;transition:all .15s;border:2px solid}
+.q-opt:active{transform:scale(.97)}
+.q-result{text-align:center;padding:30px 0;animation:fadeIn .4s ease}
+.q-result-emoji{font-size:56px;margin-bottom:6px}
+.q-result-score{font-size:22px;font-weight:700;color:#fff}
+.q-result-msg{color:#888;font-size:14px;margin-top:6px}
+
+/* TRANSLATE */
+.tr-box{animation:fadeIn .3s ease;max-width:460px;margin:0 auto}
+.tr-input-wrap{display:flex;gap:8px;margin-bottom:14px}
+.tr-input{flex:1;padding:12px 14px;border-radius:12px;border:1.5px solid #ffffff22;background:#ffffff08;color:#fff;font-size:15px;font-family:'Heebo',sans-serif;outline:none;direction:ltr;text-align:right}
+.tr-input:focus{border-color:#4285F4}
+.tr-input::placeholder{color:#555}
+.tr-btn{padding:10px 18px;border-radius:12px;border:none;background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:'Heebo',sans-serif;white-space:nowrap;transition:transform .15s}
+.tr-btn:active{transform:scale(.95)}
+.tr-btn:disabled{opacity:.5}
+.tr-result{border-radius:16px;padding:20px;background:#ffffff08;border:1px solid #ffffff15;text-align:center}
+.tr-eng{font-size:32px;font-weight:700;margin-bottom:6px;direction:ltr}
+.tr-phon{font-size:15px;color:#4285F4;margin-bottom:4px;direction:ltr}
+.tr-meaning{font-size:14px;color:#aaa;margin-bottom:12px}
+.tr-loading{text-align:center;padding:30px;color:#888;font-size:14px}
+.tr-note{font-size:11px;color:#555;text-align:center;margin-top:10px}
+.tr-lang-toggle{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
+.tr-lang-btn{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid #ffffff22;background:transparent;color:#777;transition:all .2s}
+.tr-lang-btn.on{background:#4285F433;color:#4285F4;border-color:#4285F455}
+
+/* DAILY SENTENCE */
+.daily{border-radius:16px;padding:18px;margin-bottom:14px;background:linear-gradient(135deg,#4285F418,#34A85310);border:1.5px solid #4285F433;animation:fadeIn .5s ease}
+.daily-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.daily-badge{font-size:11px;color:#4285F4;font-weight:700;background:#4285F418;padding:3px 10px;border-radius:6px}
+.daily-eng{font-size:26px;font-weight:700;text-align:center;margin-bottom:6px;direction:ltr}
+.daily-phon{font-size:14px;color:#4285F4;text-align:center;margin-bottom:4px;direction:ltr}
+.daily-heb{font-size:16px;color:#ccc;text-align:center;font-weight:500;margin-bottom:10px}
+.daily-tip{font-size:11px;color:#888;text-align:center;font-style:italic;margin-top:6px}
+.daily-spk{display:flex;justify-content:center;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="hdr">
+    <h1>🇬🇧 לומדים אנגלית</h1>
+    <p>לחץ 🔈 לשמוע הגייה אמיתית באנגלית</p>
+    <div class="prog-wrap">
+      <div class="prog-bar"><div class="prog-fill" id="mainProgress" style="width:0%"></div></div>
+      <span class="prog-txt" id="mainCount">0/0</span>
+    </div>
+    <div class="voice-info" id="voiceInfo"></div>
+  </div>
+  <div id="content"></div>
+</div>
+
+<script>
+// ===== DATA =====
+var DATA=[
+{id:"numbers",name:"מספרים 0-20",icon:"🔢",color:"#00B4D8",words:[
+{t:"Zero",p:"זִירוֹ",h:"0"},{t:"One",p:"וואָן",h:"1"},{t:"Two",p:"טוּ",h:"2"},
+{t:"Three",p:"תְרִי",h:"3"},{t:"Four",p:"פוֹר",h:"4"},{t:"Five",p:"פַייבְ",h:"5"},
+{t:"Six",p:"סִיקְס",h:"6"},{t:"Seven",p:"סֶבְן",h:"7"},{t:"Eight",p:"אֵייט",h:"8"},
+{t:"Nine",p:"נַיין",h:"9"},{t:"Ten",p:"טֶן",h:"10"},{t:"Eleven",p:"אִילֶבְן",h:"11"},
+{t:"Twelve",p:"טְוֶלְב",h:"12"},{t:"Thirteen",p:"תֵרְטִין",h:"13"},
+{t:"Fourteen",p:"פוֹרְטִין",h:"14"},{t:"Fifteen",p:"פִיפְטִין",h:"15"},
+{t:"Sixteen",p:"סִיקְסְטִין",h:"16"},{t:"Seventeen",p:"סֶבְנְטִין",h:"17"},
+{t:"Eighteen",p:"אֵייטִין",h:"18"},{t:"Nineteen",p:"נַיינְטִין",h:"19"},
+{t:"Twenty",p:"טְוֶנְטִי",h:"20"}]},
+{id:"basics",name:"ביטויים בסיסיים",icon:"🙏",color:"#F9A826",words:[
+{t:"Please",p:"פְּלִיז",h:"בבקשה"},{t:"Thank you",p:"תֶנְק יוּ",h:"תודה"},
+{t:"Yes",p:"יֶס",h:"כן"},{t:"No",p:"נוֹ",h:"לא"},
+{t:"I don't understand",p:"אַיי דוֹנְט אַנְדֶרְסְטֶנְד",h:"לא מבין"},{t:"Say it again",p:"סֵיי אִיט אַגֵיין",h:"תגיד שוב"},
+{t:"Bathroom",p:"בַּאתְרוּם",h:"שירותים"},{t:"Hot",p:"הוֹט",h:"חם"},
+{t:"Cold",p:"קוֹלְד",h:"קר"},{t:"Good",p:"גוּד",h:"טוב"},{t:"Bad",p:"בֶּאד",h:"רע"},
+{t:"Sorry",p:"סוֹרִי",h:"סליחה"},{t:"You're welcome",p:"יוֹר וֶלְקַם",h:"בשמחה"}]},
+{id:"supermarket",name:"סופרמרקט",icon:"🛒",color:"#FF6B35",words:[
+{t:"Water",p:"ווֹטֶר",h:"מים"},{t:"Rice",p:"רַייס",h:"אורז"},{t:"Egg",p:"אֶג",h:"ביצה"},
+{t:"Vegetables",p:"וֶג׳טַבְּלְז",h:"ירקות"},{t:"Fruit",p:"פְרוּט",h:"פירות"},{t:"Meat",p:"מִיט",h:"בשר"},
+{t:"Fish",p:"פִישׁ",h:"דג"},{t:"Milk",p:"מִילְק",h:"חלב"},{t:"Bread",p:"בְּרֶד",h:"לחם"},
+{t:"How much?",p:"הַאוּ מַאצ׳",h:"כמה עולה?"},{t:"Bag",p:"בֶּאג",h:"שקית"},
+{t:"Expensive",p:"אֶקְסְפֶּנְסִיב",h:"יקר"},{t:"Cheap",p:"צִ׳יפּ",h:"זול"}]},
+{id:"restaurant",name:"מסעדה",icon:"🍜",color:"#E63946",words:[
+{t:"Menu",p:"מֶנְיוּ",h:"תפריט"},{t:"Order",p:"אוֹרְדֶר",h:"להזמין"},
+{t:"Water",p:"ווֹטֶר",h:"מים"},{t:"Beer",p:"בִּיר",h:"בירה"},
+{t:"Fried rice",p:"פְרַייד רַייס",h:"אורז מוקפץ"},{t:"Steak",p:"סְטֵייק",h:"סטייק"},
+{t:"Soup",p:"סוּפּ",h:"מרק"},{t:"The check please",p:"דה צ׳ֶק פְּלִיז",h:"חשבון בבקשה"},
+{t:"I'm full",p:"אַיים פוּל",h:"שבע/ה"},{t:"Spoon",p:"סְפּוּן",h:"כף"},
+{t:"Fork",p:"פוֹרְק",h:"מזלג"},{t:"Plate",p:"פְּלֵייט",h:"צלחת"},
+{t:"Glass",p:"גְלַאס",h:"כוס"},{t:"No MSG",p:"נוֹ אֶם אֶס ג׳ִי",h:"בלי MSG"}]},
+{id:"market",name:"שוק",icon:"🏪",color:"#FF6F91",words:[
+{t:"Delicious",p:"דֶלִישְׁאַס",h:"טעים"},{t:"Spicy",p:"סְפַּייסִי",h:"חריף"},
+{t:"Not spicy",p:"נוֹט סְפַּייסִי",h:"לא חריף"},{t:"Sweet",p:"סְוִויט",h:"מתוק"},
+{t:"Sour",p:"סַאוּוֶר",h:"חמוץ"},{t:"Salty",p:"סוֹלְטִי",h:"מלוח"},
+{t:"Any discount?",p:"אֶנִי דִיסְקַאוּנְט",h:"אפשר הנחה?"},{t:"This one",p:"דִיס וואָן",h:"את זה"},
+{t:"I'll take this",p:"אַייל טֵייק דִיס",h:"אקח את זה"},{t:"Put in a bag",p:"פּוּט אִין אַ בֶּאג",h:"שים בשקית"},
+{t:"Pay",p:"פֵּיי",h:"לשלם"},{t:"Thank you",p:"תֶנְק יוּ",h:"תודה"}]},
+{id:"hotel",name:"בית מלון",icon:"🏨",color:"#4ECDC4",words:[
+{t:"Room",p:"רוּם",h:"חדר"},{t:"Key",p:"קִי",h:"מפתח"},
+{t:"Check in",p:"צ׳ֶק אִין",h:"צ'ק אין"},{t:"Check out",p:"צ׳ֶק אַאוּט",h:"צ'ק אאוט"},
+{t:"Towel",p:"טַאוּוֶל",h:"מגבת"},{t:"Air conditioner",p:"אֵר קַנְדִישְׁנֶר",h:"מזגן"},
+{t:"Breakfast",p:"בְּרֶקְפַסְט",h:"ארוחת בוקר"},{t:"Available?",p:"אַבֵילַבְּל",h:"יש פנוי?"},
+{t:"Night",p:"נַייט",h:"לילה"},{t:"Pool",p:"פּוּל",h:"בריכה"},
+{t:"WiFi",p:"ווַיי-פַיי",h:"וויי-פיי"},{t:"Elevator",p:"אֶלֶבֵייטֶר",h:"מעלית"}]},
+{id:"partner",name:"בת זוג",icon:"💕",color:"#C06C84",words:[
+{t:"Hello",p:"הֶלוֹ",h:"שלום"},{t:"Love",p:"לַאב",h:"אהבה"},
+{t:"I miss you",p:"אַיי מִיס יוּ",h:"מתגעגע"},{t:"Are you hungry?",p:"אָר יוּ הַאנְגְרִי",h:"את רעבה?"},
+{t:"Where shall we go?",p:"ווֶר שֶׁאל ווִי גוֹ",h:"לאן נלך?"},{t:"How are you?",p:"הַאוּ אָר יוּ",h:"מה שלומך"},
+{t:"Cute",p:"קְיוּט",h:"חמוד/ה"},{t:"Let's eat",p:"לֶטְס אִיט",h:"בוא נאכל"},
+{t:"It's okay",p:"אִיטְס אוֹקֵיי",h:"לא נורא"},{t:"Help!",p:"הֶלְפּ",h:"עזרה!"},
+{t:"Tired",p:"טַיירְד",h:"עייף/ה"},{t:"Sleepy",p:"סְלִיפִּי",h:"מנומנם/ת"},
+{t:"Sweet dreams",p:"סְוִויט דְרִימְז",h:"חלומות נעימים"},{t:"Let's go together",p:"לֶטְס גוֹ טוּגֶדֶר",h:"נלך ביחד"}]},
+{id:"transport",name:"תחבורה",icon:"🚕",color:"#845EC2",words:[
+{t:"Go to",p:"גוֹ טוּ",h:"ללכת ל..."},{t:"Stop",p:"סְטוֹפּ",h:"עצור"},
+{t:"Straight",p:"סְטְרֵייט",h:"ישר"},{t:"Turn left",p:"טֶרְן לֶפְט",h:"שמאלה"},
+{t:"Turn right",p:"טֶרְן רַייט",h:"ימינה"},{t:"Close",p:"קְלוֹז",h:"קרוב"},
+{t:"Far",p:"פַאר",h:"רחוק"},{t:"Stop here",p:"סְטוֹפּ הִיר",h:"עצור כאן"},
+{t:"Airport",p:"אֵרְפּוֹרְט",h:"שדה תעופה"},{t:"Station",p:"סְטֵיישְׁן",h:"תחנה"},
+{t:"Taxi",p:"טַקְסִי",h:"מונית"},{t:"Train",p:"טְרֵיין",h:"רכבת"}]},
+{id:"pharmacy",name:"בריאות",icon:"💊",color:"#06D6A0",words:[
+{t:"Pharmacy",p:"פַארְמַסִי",h:"בית מרקחת"},{t:"Medicine",p:"מֶדְסִין",h:"תרופה"},
+{t:"Headache",p:"הֶדְאֵייק",h:"כאב ראש"},{t:"Stomachache",p:"סְטוֹמַקְאֵייק",h:"כאב בטן"},
+{t:"Fever",p:"פִיבֶר",h:"חום"},{t:"Pain",p:"פֵּיין",h:"כואב"},
+{t:"Allergy",p:"אַלֶרְג׳ִי",h:"אלרגיה"},{t:"Hospital",p:"הוֹסְפִּיטַל",h:"בית חולים"},
+{t:"Doctor",p:"דוֹקְטֶר",h:"רופא"},{t:"Diarrhea",p:"דַיַרִיאָ",h:"שלשול"},
+{t:"Cough",p:"קוֹף",h:"שיעול"},{t:"Cold",p:"קוֹלְד",h:"מצונן"}]},
+{id:"time",name:"זמן ויום",icon:"🕐",color:"#118AB2",words:[
+{t:"Today",p:"טוּדֵיי",h:"היום"},{t:"Tomorrow",p:"טוּמוֹרוֹ",h:"מחר"},
+{t:"Yesterday",p:"יֶסְטֶרְדֵיי",h:"אתמול"},{t:"Morning",p:"מוֹרְנִינְג",h:"בוקר"},
+{t:"Noon",p:"נוּן",h:"צהריים"},{t:"Afternoon",p:"אַפְטֶרְנוּן",h:"אחה״צ"},
+{t:"Evening",p:"אִיבְנִינְג",h:"ערב"},{t:"What time is it?",p:"ווָט טַיים אִיז אִיט",h:"מה השעה?"},
+{t:"Monday",p:"מַאנְדֵיי",h:"יום שני"},{t:"Sunday",p:"סַאנְדֵיי",h:"יום ראשון"},
+{t:"Saturday",p:"סַטֶרְדֵיי",h:"יום שבת"},{t:"Week",p:"ווִיק",h:"שבוע"},
+{t:"Month",p:"מַאנְת",h:"חודש"},{t:"Year",p:"יִיר",h:"שנה"}]},
+{id:"shopping",name:"קניות",icon:"🛍️",color:"#EF476F",words:[
+{t:"Shop",p:"שׁוֹפּ",h:"חנות"},{t:"Buy",p:"בַּיי",h:"לקנות"},
+{t:"Sell",p:"סֶל",h:"למכור"},{t:"Size",p:"סַייז",h:"מידה"},
+{t:"Big",p:"בִּיג",h:"גדול"},{t:"Small",p:"סְמוֹל",h:"קטן"},
+{t:"Can I try it on?",p:"קֶן אַיי טְרַיי אִיט אוֹן",h:"אפשר למדוד?"},
+{t:"Credit card",p:"קְרֶדִיט קַארְד",h:"כרטיס אשראי"},{t:"Cash",p:"קֶשׁ",h:"מזומן"},
+{t:"Receipt",p:"רִיסִיט",h:"קבלה"},{t:"Mall",p:"מוֹל",h:"קניון"},
+{t:"Market",p:"מַארְקֶט",h:"שוק"}]},
+{id:"weather",name:"מזג אוויר",icon:"🌤️",color:"#FFD166",words:[
+{t:"Rainy",p:"רֵיינִי",h:"גשום"},{t:"Sunny",p:"סַאנִי",h:"שמשי"},
+{t:"Very hot",p:"בֶרִי הוֹט",h:"חם מאוד"},{t:"Cold",p:"קוֹלְד",h:"קר"},
+{t:"Clouds",p:"קְלַאוּדְז",h:"עננים"},{t:"Wind",p:"ווִינְד",h:"רוח"},
+{t:"Umbrella",p:"אַמְבְּרֶלָה",h:"מטרייה"},{t:"Flood",p:"פְלַאד",h:"הצפה"},
+{t:"Nice weather",p:"נַייס ווֶדֶר",h:"מזג אוויר נעים"},{t:"Humid",p:"הְיוּמִיד",h:"לח"}]},
+{id:"emergency",name:"חירום",icon:"🆘",color:"#D00000",words:[
+{t:"Help!",p:"הֶלְפּ",h:"עזרה!"},{t:"Police",p:"פּוֹלִיס",h:"משטרה"},
+{t:"Ambulance",p:"אַמְבְּיוּלַנְס",h:"אמבולנס"},{t:"Fire",p:"פַייר",h:"שריפה"},
+{t:"Dangerous",p:"דֵיינְג׳ֶרַס",h:"מסוכן"},{t:"Lost",p:"לוֹסְט",h:"אבוד"},
+{t:"Thief",p:"תִיף",h:"גנב"},{t:"Embassy",p:"אֶמְבַּסִי",h:"שגרירות"},
+{t:"Passport",p:"פַּאסְפּוֹרְט",h:"דרכון"},{t:"Insurance",p:"אִינְשׁוּרַנְס",h:"ביטוח"}]},
+{id:"family",name:"משפחה",icon:"👨‍👩‍👧",color:"#2EC4B6",words:[
+{t:"Father",p:"פַאדֶר",h:"אבא"},{t:"Mother",p:"מַאדֶר",h:"אמא"},
+{t:"Child",p:"צ׳ַיילְד",h:"ילד/ה"},{t:"Older sibling",p:"אוֹלְדֶר סִיבְּלִינְג",h:"אח/ות גדול/ה"},
+{t:"Younger sibling",p:"יַאנְגֶר סִיבְּלִינְג",h:"אח/ות קטן/ה"},{t:"Friend",p:"פְרֶנְד",h:"חבר/ה"},
+{t:"Partner",p:"פַּארְטְנֶר",h:"בן/בת זוג"},{t:"Husband",p:"הַאזְבַּנְד",h:"בעל"},
+{t:"Wife",p:"ווַייף",h:"רעייה"},{t:"Son",p:"סַאן",h:"בן"},
+{t:"Daughter",p:"דוֹטֶר",h:"בת"}]},
+{id:"colors",name:"צבעים",icon:"🎨",color:"#F72585",words:[
+{t:"Red",p:"רֶד",h:"אדום"},{t:"Yellow",p:"יֶלוֹ",h:"צהוב"},
+{t:"Green",p:"גְרִין",h:"ירוק"},{t:"Blue",p:"בְּלוּ",h:"כחול"},
+{t:"White",p:"ווַייט",h:"לבן"},{t:"Black",p:"בְּלֶאק",h:"שחור"},
+{t:"Pink",p:"פִּינְק",h:"ורוד"},{t:"Orange",p:"אוֹרַנְג׳",h:"כתום"},
+{t:"Purple",p:"פֶּרְפְּל",h:"סגול"},{t:"Brown",p:"בְּרַאוּן",h:"חום"}]},
+{id:"body",name:"גוף ותחושות",icon:"🫀",color:"#7B2CBF",words:[
+{t:"Head",p:"הֶד",h:"ראש"},{t:"Eye",p:"אַיי",h:"עין"},{t:"Ear",p:"אִיר",h:"אוזן"},
+{t:"Mouth",p:"מַאוּת",h:"פה"},{t:"Hand",p:"הֶנְד",h:"יד"},{t:"Foot",p:"פוּט",h:"רגל"},
+{t:"Stomach",p:"סְטוֹמַק",h:"בטן"},{t:"Back",p:"בֶּאק",h:"גב"},
+{t:"Hungry",p:"הַאנְגְרִי",h:"רעב"},{t:"Thirsty",p:"תֶרְסְטִי",h:"צמא"},
+{t:"Comfortable",p:"קוֹמְפְטֶרְבְּל",h:"נוח/בסדר"},{t:"Tooth",p:"טוּת",h:"שן"}]},
+{id:"home",name:"בבית",icon:"🏠",color:"#3A86FF",words:[
+{t:"House",p:"הַאוּס",h:"בית"},{t:"Bedroom",p:"בֶּדְרוּם",h:"חדר שינה"},
+{t:"Kitchen",p:"קִיטְשְׁן",h:"מטבח"},{t:"Door",p:"דוֹר",h:"דלת"},
+{t:"Window",p:"ווִינְדוֹ",h:"חלון"},{t:"Bed",p:"בֶּד",h:"מיטה"},
+{t:"Table",p:"טֵייבְּל",h:"שולחן"},{t:"Chair",p:"צ׳ֵר",h:"כיסא"},
+{t:"Fan",p:"פֶן",h:"מאוורר"},{t:"Laundry",p:"לוֹנְדְרִי",h:"כביסה"},
+{t:"Cook",p:"קוּק",h:"לבשל"},{t:"Clean",p:"קְלִין",h:"לנקות"}]}
+];
+
+// ===== DAILY SENTENCE =====
+var DAILY_SENTENCES=[
+// Greetings & basics
+{t:"Hello, how is your day going?",p:"הֶלוֹ, הַאוּ אִיז יוֹר דֵיי גוֹאִינְג",h:"שלום, איך היום שלך?",tip:"שאלה נפוצה לפתיחת שיחה"},
+{t:"Thank you very much",p:"תֶנְק יוּ בֶרִי מַאצ׳",h:"תודה רבה",tip:"very much = מאוד, תמיד בא אחרי"},
+{t:"No problem at all",p:"נוֹ פְּרוֹבְּלֶם אֶט אוֹל",h:"אין בעיה בכלל",tip:"ביטוי מאוד נפוץ באנגלית!"},
+{t:"The weather is really hot today",p:"דה ווֶדֶר אִיז רִיאַלִי הוֹט טוּדֵיי",h:"מזג האוויר חם מאוד היום",tip:"really = מאוד, שימושי בכל הקשר"},
+{t:"My name is...",p:"מַיי נֵיים אִיז...",h:"השם שלי...",tip:"הדרך הכי פשוטה להציג את עצמך"},
+{t:"Do you speak Hebrew?",p:"דוּ יוּ סְפִּיק הִיבְּרוּ",h:"אתה מדבר עברית?",tip:"Do you...? = שאלה נפוצה מאוד"},
+{t:"I'm learning English",p:"אַיים לֶרְנִינְג אִינְגְלִישׁ",h:"אני לומד אנגלית",tip:"I'm + פועל+ing = עכשיו"},
+{t:"Can you speak slowly?",p:"קֶן יוּ סְפִּיק סְלוֹלִי",h:"אפשר לדבר לאט?",tip:"slowly = לאט"},
+// Food & restaurant
+{t:"The food here is amazing",p:"דה פוּד הִיר אִיז אַמֵייזִינְג",h:"האוכל כאן מדהים",tip:"amazing = מדהים, מילה חובה!"},
+{t:"One bottle of water please",p:"וואָן בּוֹטְל אוֹב ווֹטֶר פְּלִיז",h:"בבקשה בקבוק מים אחד",tip:"please בסוף = מנומס"},
+{t:"Not spicy please",p:"נוֹט סְפַּייסִי פְּלִיז",h:"בלי חריף בבקשה",tip:"המשפט הכי חשוב במסעדה!"},
+{t:"I'll have the steak please",p:"אַייל הֶב דה סְטֵייק פְּלִיז",h:"אקח את הסטייק בבקשה",tip:"I'll have = אקח (להזמנה)"},
+{t:"Can I get the check please?",p:"קֶן אַיי גֶט דה צ׳ֶק פְּלִיז",h:"אפשר לקבל את החשבון?",tip:"Can I get...? = אפשר לקבל?"},
+{t:"What's in this dish?",p:"ווָטְס אִין דִיס דִישׁ",h:"מה יש במנה הזו?",tip:"שימושי לבדוק אלרגיות"},
+{t:"Have you eaten yet?",p:"הֶב יוּ אִיטֶן יֶט",h:"אכלת כבר?",tip:"yet = כבר (בשאלה)"},
+{t:"I'm full",p:"אַיים פוּל",h:"שבעתי",tip:"full = שבע/מלא"},
+// Shopping & market
+{t:"How much is this?",p:"הַאוּ מַאצ׳ אִיז דִיס",h:"כמה זה עולה?",tip:"המשפט הכי שימושי בקניות"},
+{t:"Can I get a discount?",p:"קֶן אַיי גֶט אַ דִיסְקַאוּנְט",h:"אפשר הנחה?",tip:"discount = הנחה"},
+{t:"That's too expensive",p:"דֶטְס טוּ אֶקְסְפֶּנְסִיב",h:"זה יקר מדי",tip:"too = מדי (יותר מדי)"},
+{t:"Do you have a different color?",p:"דוּ יוּ הֶב אַ דִיפְרֶנְט קַאלֶר",h:"יש צבע אחר?",tip:"different = שונה/אחר"},
+{t:"A bag please",p:"אַ בֶּאג פְּלִיז",h:"שקית בבקשה",tip:"please בסוף = מנומס"},
+{t:"Can I pay cash?",p:"קֶן אַיי פֵּיי קֶשׁ",h:"אפשר לשלם במזומן?",tip:"cash = מזומן"},
+// Transport
+{t:"How do I get there?",p:"הַאוּ דוּ אַיי גֶט דֶר",h:"איך מגיעים לשם?",tip:"How do I...? = איך אני...?"},
+{t:"Is it far?",p:"אִיז אִיט פַאר",h:"זה רחוק?",tip:"far = רחוק"},
+{t:"You can stop here",p:"יוּ קֶן סְטוֹפּ הִיר",h:"אפשר לעצור כאן",tip:"here = כאן"},
+{t:"How long does it take?",p:"הַאוּ לוֹנְג דַאז אִיט טֵייק",h:"כמה זמן לוקח?",tip:"How long = כמה זמן"},
+{t:"Can you call me a taxi?",p:"קֶן יוּ קוֹל מִי אַ טַקְסִי",h:"אפשר להזמין לי מונית?",tip:"call = להזמין/לקרוא"},
+{t:"How much to the airport?",p:"הַאוּ מַאצ׳ טוּ דה אֵרְפּוֹרְט",h:"כמה לשדה תעופה?",tip:"תמיד תשאל מחיר לפני!"},
+// Hotel
+{t:"Do you have any rooms available?",p:"דוּ יוּ הֶב אֶנִי רוּמְז אַבֵילַבְּל",h:"יש חדרים פנויים?",tip:"available = פנוי/זמין"},
+{t:"A quiet room please",p:"אַ קְוַויֶט רוּם פְּלִיז",h:"חדר שקט בבקשה",tip:"quiet = שקט"},
+{t:"What's the WiFi password?",p:"ווָטְס דה ווַיי-פַיי פַּאסְווֶרְד",h:"מה הסיסמה של הוויי-פיי?",tip:"password = סיסמה"},
+{t:"The AC isn't working",p:"דה אֵי-סִי אִיזְנְט ווֶרְקִינְג",h:"המזגן לא עובד",tip:"isn't working = לא עובד"},
+{t:"What time is check out?",p:"ווָט טַיים אִיז צ׳ֶק אַאוּט",h:"באיזו שעה צ'ק אאוט?",tip:"What time = באיזו שעה"},
+// Partner / relationship
+{t:"Where should we go today?",p:"ווֶר שׁוּד ווִי גוֹ טוּדֵיי",h:"לאן נלך היום?",tip:"should = כדאי"},
+{t:"Are you hungry yet?",p:"אָר יוּ הַאנְגְרִי יֶט",h:"כבר רעבה?",tip:"yet = כבר"},
+{t:"I miss you so much",p:"אַיי מִיס יוּ סוֹ מַאצ׳",h:"מתגעגע מאוד",tip:"so much = כל כך הרבה"},
+{t:"Sweet dreams",p:"סְוִויט דְרִימְז",h:"חלומות נעימים",tip:"ביטוי חמוד לפני שינה"},
+{t:"Shall we go for a walk?",p:"שֶׁאל ווִי גוֹ פוֹר אַ ווֹק",h:"נלך לטייל?",tip:"Shall we...? = בוא נ...?"},
+{t:"What should we eat?",p:"ווָט שׁוּד ווִי אִיט",h:"מה נאכל?",tip:"השאלה היומיומית מספר 1"},
+{t:"I'll be home soon",p:"אַייל בִּי הוֹם סוּן",h:"עוד מעט בבית",tip:"soon = בקרוב"},
+{t:"I love you",p:"אַיי לַאב יוּ",h:"אני אוהב אותך",tip:"קצר, מתוק, קלאסי"},
+// Practical daily
+{t:"Where is it?",p:"ווֶר אִיז אִיט",h:"איפה זה?",tip:"Where = איפה"},
+{t:"Can you take a picture of me?",p:"קֶן יוּ טֵייק אַ פִּיקְצ׳ֶר אוֹב מִי",h:"אפשר לצלם אותי?",tip:"take a picture = לצלם"},
+{t:"What's the problem?",p:"ווָטְס דה פְּרוֹבְּלֶם",h:"מה הבעיה?",tip:"problem = בעיה"},
+{t:"Don't worry",p:"דוֹנְט ווַרִי",h:"אל תדאג",tip:"ביטוי מרגיע"},
+{t:"See you tomorrow",p:"סִי יוּ טוּמוֹרוֹ",h:"נתראה מחר",tip:"See you = להתראות"},
+{t:"Just a moment please",p:"ג׳ַאסְט אַ מוֹמֶנְט פְּלִיז",h:"רגע בבקשה",tip:"just a moment = רק רגע"},
+{t:"Are you ready?",p:"אָר יוּ רֶדִי",h:"מוכן?",tip:"ready = מוכן"},
+{t:"I'll have one more",p:"אַייל הֶב וואָן מוֹר",h:"אקח עוד אחד",tip:"one more = עוד אחד"},
+{t:"Why is it so expensive?",p:"ווַיי אִיז אִיט סוֹ אֶקְסְפֶּנְסִיב",h:"למה זה כל כך יקר?",tip:"Why = למה, so = כל כך"},
+{t:"That's very interesting",p:"דֶטְס בֶרִי אִינְטֶרֶסְטִינְג",h:"מאוד מעניין",tip:"interesting = מעניין"},
+{t:"So much fun",p:"סוֹ מַאצ׳ פַאן",h:"כיף מאוד",tip:"fun = כיף, מילה חשובה!"},
+{t:"I'm very tired",p:"אַיים בֶרִי טַיירְד",h:"עייף מאוד",tip:"ביטוי יומי נפוץ"},
+{t:"It's so hot!",p:"אִיטְס סוֹ הוֹט",h:"חם ככה!",tip:"so = כל כך"},
+{t:"Get well soon",p:"גֶט ווֶל סוּן",h:"החלמה מהירה",tip:"ביטוי כשמישהו חולה"},
+{t:"Nice to meet you",p:"נַייס טוּ מִיט יוּ",h:"נעים מאוד להכיר",tip:"ביטוי רשמי להיכרות"},
+{t:"Can you say that again?",p:"קֶן יוּ סֵיי דֶט אַגֵיין",h:"אפשר לחזור על זה?",tip:"חיוני ללימוד!"},
+{t:"I don't understand, can you explain?",p:"אַיי דוֹנְט אַנְדֶרְסְטֶנְד, קֶן יוּ אֶקְסְפְּלֵיין",h:"לא מבין, אפשר להסביר?",tip:"explain = להסביר"},
+{t:"Today is Friday",p:"טוּדֵיי אִיז פְרַיידֵיי",h:"היום יום שישי",tip:"ימי השבוע: Monday Tuesday Wednesday Thursday Friday Saturday Sunday"},
+{t:"What time is it?",p:"ווָט טַיים אִיז אִיט",h:"מה השעה?",tip:"שאלה בסיסית ושימושית"},
+{t:"Is it much longer?",p:"אִיז אִיט מַאצ׳ לוֹנְגֶר",h:"עוד הרבה לחכות?",tip:"longer = עוד יותר זמן"},
+{t:"I have to go now",p:"אַיי הֶב טוּ גוֹ נַאוּ",h:"חייב ללכת עכשיו",tip:"have to = חייב"},
+{t:"See you!",p:"סִי יוּ",h:"להתראות!",tip:"הפרידה הנפוצה ביותר"},
+{t:"Good luck!",p:"גוּד לַאק",h:"בהצלחה!",tip:"luck = מזל"},
+{t:"Be careful!",p:"בִּי קֶרְפוּל",h:"היזהר!",tip:"careful = זהיר"},
+];
+
+function getDailySentence(){
+  var now=new Date();
+  var h=now.getHours();
+  var d=new Date(now);
+  if(h<6) d.setDate(d.getDate()-1);
+  var epoch=new Date(2025,0,1);
+  var dayNum=Math.floor((d-epoch)/(1000*60*60*24));
+  var idx=((dayNum%DAILY_SENTENCES.length)+DAILY_SENTENCES.length)%DAILY_SENTENCES.length;
+  return DAILY_SENTENCES[idx];
+}
+
+// ===== TTS =====
+var ttsOk=false,engVoice=null,nowSpeaking=null;
+try{
+  if(window.speechSynthesis){
+    ttsOk=true;
+    function loadVoices(){
+      var v=speechSynthesis.getVoices();
+      engVoice=null;
+      for(var i=0;i<v.length;i++){if(v[i].lang.indexOf('en')===0){engVoice=v[i];break;}}
+      var el=document.getElementById('voiceInfo');
+      if(el){
+        if(engVoice) el.innerHTML='<span style="color:#51cf66">✅ '+engVoice.name+'</span>';
+        else if(v.length>0) el.innerHTML='<span style="color:#F9A826">⚠️ התקן קול אנגלי בהגדרות המכשיר</span>';
+      }
+    }
+    speechSynthesis.onvoiceschanged=loadVoices;
+    loadVoices();
+  }
+}catch(e){ttsOk=false;}
+
+function speak(txt){
+  if(!ttsOk){alert('פתח בדפדפן Chrome עם קול אנגלי מותקן');return;}
+  try{speechSynthesis.cancel();}catch(e){}
+  var u=new SpeechSynthesisUtterance(txt.replace(/\//g,' '));
+  u.lang='en-US';
+  if(engVoice)u.voice=engVoice;
+  u.rate=0.85;u.pitch=1;
+  nowSpeaking=txt;
+  updateSpeakers();
+  u.onend=u.onerror=function(){nowSpeaking=null;updateSpeakers();};
+  speechSynthesis.speak(u);
+}
+
+function updateSpeakers(){
+  var btns=document.querySelectorAll('.spk[data-th]');
+  for(var i=0;i<btns.length;i++){
+    var b=btns[i];
+    if(b.dataset.th===nowSpeaking){b.classList.add('on');b.textContent='🔊';}
+    else{b.classList.remove('on');b.textContent='🔈';}
+  }
+}
+
+// ===== STATE =====
+var S={screen:'home',catIdx:-1,mode:'list',known:{},fc:[],fi:0,flip:false,qq:[],qi:0,qa:null,qs:0,qd:false};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=a[i];a[i]=a[j];a[j]=tmp;}return a;}
+function kKey(cat,w){return cat.id+':'+w.t;}
+
+// ===== RENDER =====
+function render(){
+  var c=document.getElementById('content');
+  var total=0,known=0;
+  DATA.forEach(function(cat){cat.words.forEach(function(w){total++;if(S.known[kKey(cat,w)])known++;});});
+  document.getElementById('mainProgress').style.width=(total?known/total*100:0)+'%';
+  document.getElementById('mainCount').textContent=known+'/'+total;
+
+  if(S.screen==='home'){
+    document.querySelector('.hdr').classList.remove('hide');
+    c.innerHTML=renderHome();
+  }else if(S.screen==='translate'){
+    document.querySelector('.hdr').classList.add('hide');
+    c.innerHTML=renderTranslate();
+  }else{
+    document.querySelector('.hdr').classList.add('hide');
+    c.innerHTML=renderInner();
+  }
+  bindAll();
+}
+
+function renderHome(){
+  var ds=getDailySentence();
+  var html='<div class="daily">';
+  html+='<div class="daily-top"><span style="font-size:20px">📅</span><span class="daily-badge">משפט היום</span></div>';
+  html+='<div class="daily-eng eng">'+ds.t+'</div>';
+  html+='<div class="daily-spk">'+spkBtn(ds.t,'#4285F4',true)+'</div>';
+  html+='<div class="daily-phon">'+ds.p+'</div>';
+  html+='<div class="daily-heb">'+ds.h+'</div>';
+  if(ds.tip) html+='<div class="daily-tip">💡 '+ds.tip+'</div>';
+  html+='</div>';
+  // Translate button
+  html+='<div style="margin-bottom:14px"><button class="cat" id="goTranslate" style="width:100%;background:linear-gradient(135deg,#4285F422,#34A85311);border-color:#4285F444;text-align:center;padding:16px">';
+  html+='<span style="font-size:28px">🔄</span><br>';
+  html+='<span class="cat-name" style="color:#4285F4;font-size:18px">תרגום בלייב</span><br>';
+  html+='<span style="font-size:11px;color:#888">כתוב משפט בעברית → תרגום + הגייה באנגלית</span>';
+  html+='</button></div>';
+  html+='<div class="cats">';
+  DATA.forEach(function(cat,i){
+    var kn=0;cat.words.forEach(function(w){if(S.known[kKey(cat,w)])kn++;});
+    var pct=cat.words.length?Math.round(kn/cat.words.length*100):0;
+    html+='<div class="cat" data-ci="'+i+'" style="background:linear-gradient(135deg,'+cat.color+'22,'+cat.color+'11);border-color:'+cat.color+'33">';
+    html+='<div class="cat-top"><span class="cat-icon">'+cat.icon+'</span><span class="cat-cnt">'+cat.words.length+' מילים</span></div>';
+    html+='<div class="cat-name" style="color:'+cat.color+'">'+cat.name+'</div>';
+    html+='<div class="cat-bar" style="background:'+cat.color+'22"><div class="cat-bar-fill" style="width:'+pct+'%;background:'+cat.color+'"></div></div>';
+    html+='<div class="cat-pct">'+pct+'%</div></div>';
+  });
+  return html+'</div>';
+}
+
+function renderInner(){
+  var cat=DATA[S.catIdx],c=cat.color;
+  var html='<div class="inner-hdr"><button class="back-btn" id="goBack">→</button>';
+  html+='<div class="inner-title"><span style="font-size:20px">'+cat.icon+'</span><h2 style="color:'+c+'">'+cat.name+'</h2></div>';
+  html+='<div style="width:36px"></div></div>';
+  
+  html+='<div class="tabs">';
+  [{m:'list',l:'📖 רשימה'},{m:'flash',l:'🃏 כרטיסיות'},{m:'quiz',l:'🧠 חידון'}].forEach(function(t){
+    var on=S.mode===t.m;
+    html+='<button class="tab'+(on?' on':'')+'" data-mode="'+t.m+'" style="'+(on?'background:'+c+'33;color:'+c+';border-color:'+c+'55':'')+'"">'+t.l+'</button>';
+  });
+  html+='</div>';
+
+  if(S.mode==='list') html+=renderList(cat);
+  else if(S.mode==='flash') html+=renderFlash(cat);
+  else if(S.mode==='quiz') html+=renderQuiz(cat);
+  return html;
+}
+
+function spkBtn(eng,c,big){
+  var on=nowSpeaking===eng;
+  var cls='spk'+(big?' lg':'')+(on?' on':'');
+  return '<button class="'+cls+'" data-th="'+eng+'" style="border-color:'+(on?c:c+'33')+';background:'+(on?c+'33':c+'15')+'">'+(on?'🔊':'🔈')+'</button>';
+}
+
+function renderList(cat){
+  var c=cat.color,html='<div class="wlist">';
+  cat.words.forEach(function(w){
+    html+='<div class="witem" style="background:'+c+'08;border:1px solid '+c+'15">';
+    html+='<div class="wleft">'+spkBtn(w.t,c,false);
+    html+='<span class="weng eng">'+w.t+'</span><span class="wphon">'+w.p+'</span></div>';
+    html+='<span class="wheb">'+w.h+'</span></div>';
+  });
+  return html+'</div>';
+}
+
+function renderFlash(cat){
+  var c=cat.color,cards=S.fc;
+  if(!cards.length||S.fi>=cards.length) return '<div style="text-align:center;color:#888;padding:40px">סיימת! 🎉<br><br><button class="tab" data-mode="list" style="background:'+c+'22;color:'+c+'">חזרה לרשימה</button></div>';
+  var w=cards[S.fi],fl=S.flip;
+  var html='<div class="fc"><div class="fc-count">'+(S.fi+1)+'/'+cards.length+'</div>';
+  html+='<div class="fc-card" id="flipCard" style="background:'+(fl?'linear-gradient(145deg,'+c+'15,'+c+'08)':'linear-gradient(145deg,#1a1a2e,#16213e)')+';border:2px solid '+(fl?c+'44':'#ffffff15')+'">';
+  if(!fl){
+    html+='<div class="fc-eng eng">'+w.t+'</div>';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-top:14px">'+spkBtn(w.t,c,true)+'<span class="fc-hint">לחץ לגלות</span></div>';
+  }else{
+    html+='<div style="display:flex;align-items:center;gap:8px"><span class="eng" style="font-size:26px;font-weight:700">'+w.t+'</span>'+spkBtn(w.t,c,true)+'</div>';
+    html+='<div class="fc-phon" style="color:'+c+'">'+w.p+'</div>';
+    html+='<div class="fc-heb">'+w.h+'</div>';
+  }
+  html+='</div>';
+  if(fl) html+='<div class="fc-btns"><button class="fc-btn no" id="fcNo">עוד לא 🤔</button><button class="fc-btn yes" id="fcYes">יודע ✅</button></div>';
+  return html+'</div>';
+}
+
+function renderQuiz(cat){
+  var c=cat.color,qs=S.qq;
+  if(!qs.length) return '';
+  if(S.qd){
+    var pct=Math.round(S.qs/qs.length*100);
+    var emo=pct>=80?'🎉':pct>=50?'💪':'📚';
+    var msg=pct>=80?'מצוין!':pct>=50?'לא רע!':'תמשיך ללמוד!';
+    return '<div class="q-result"><div class="q-result-emoji">'+emo+'</div><div class="q-result-score">'+S.qs+'/'+qs.length+'</div><div class="q-result-msg">'+msg+'</div><br><button class="tab" data-mode="list" style="background:'+c+'22;color:'+c+'">חזרה</button></div>';
+  }
+  var q=qs[S.qi],sel=S.qa;
+  var html='<div class="quiz">';
+  html+='<div class="q-dots">';
+  qs.forEach(function(_,i){html+='<div class="q-dot" style="background:'+(i<S.qi?c:i===S.qi?'#fff':'#ffffff22')+'"></div>';});
+  html+='</div>';
+  html+='<div class="q-prompt">מה התרגום של:</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px"><span class="q-eng eng">'+q.w.t+'</span>'+spkBtn(q.w.t,c,true)+'</div>';
+  html+='<div class="q-phon">'+q.w.p+'</div>';
+  html+='<div class="q-opts">';
+  q.opts.forEach(function(o){
+    var bg=c+'11',bd=c+'33';
+    if(sel!==null){
+      if(o.t===q.w.t){bg='#51cf6633';bd='#51cf66';}
+      else if(o.t===sel){bg='#ff4d4d33';bd='#ff4d4d';}
+    }
+    html+='<div class="q-opt" data-ans="'+o.t+'" style="background:'+bg+';border-color:'+bd+'">'+o.h+'</div>';
+  });
+  return html+'</div></div>';
+}
+
+// ===== EVENTS =====
+function bindAll(){
+  document.querySelectorAll('[data-ci]').forEach(function(el){
+    el.onclick=function(){S.catIdx=+el.dataset.ci;S.screen='inner';S.mode='list';render();};
+  });
+  var trBtn=document.getElementById('goTranslate');
+  if(trBtn)trBtn.onclick=function(){S.screen='translate';trResult=null;trInput='';render();};
+  var bb=document.getElementById('goBack');
+  if(bb)bb.onclick=function(){S.screen='home';render();};
+  document.querySelectorAll('[data-mode]').forEach(function(el){
+    el.onclick=function(){
+      var m=el.dataset.mode;S.mode=m;
+      var cat=DATA[S.catIdx];
+      if(m==='flash'){S.fc=shuffle(cat.words);S.fi=0;S.flip=false;}
+      if(m==='quiz'){
+        var sh=shuffle(cat.words).slice(0,Math.min(8,cat.words.length));
+        S.qq=sh.map(function(w){return{w:w,opts:shuffle([w].concat(shuffle(cat.words.filter(function(x){return x.t!==w.t;})).slice(0,3)))};});
+        S.qi=0;S.qa=null;S.qs=0;S.qd=false;
+      }
+      render();
+    };
+  });
+  document.querySelectorAll('.spk[data-th]').forEach(function(el){
+    el.onclick=function(e){e.stopPropagation();speak(el.dataset.th);};
+  });
+  var fc=document.getElementById('flipCard');
+  if(fc)fc.onclick=function(){S.flip=!S.flip;render();};
+  var fy=document.getElementById('fcYes'),fn=document.getElementById('fcNo');
+  if(fy)fy.onclick=function(){var cat=DATA[S.catIdx];S.known[kKey(cat,S.fc[S.fi])]=true;S.fi++;S.flip=false;render();};
+  if(fn)fn.onclick=function(){var cat=DATA[S.catIdx];delete S.known[kKey(cat,S.fc[S.fi])];S.fi++;S.flip=false;render();};
+  document.querySelectorAll('[data-ans]').forEach(function(el){
+    el.onclick=function(){
+      if(S.qa!==null)return;
+      S.qa=el.dataset.ans;
+      if(S.qa===S.qq[S.qi].w.t)S.qs++;
+      render();
+      setTimeout(function(){
+        if(S.qi+1>=S.qq.length)S.qd=true;
+        else{S.qi++;S.qa=null;}
+        render();
+      },1000);
+    };
+  });
+  var trGo=document.getElementById('trGo');
+  if(trGo)trGo.onclick=doTranslate;
+  var trIn=document.getElementById('trInput');
+  if(trIn)trIn.onkeydown=function(e){if(e.key==='Enter')doTranslate();};
+  document.querySelectorAll('[data-dir]').forEach(function(el){
+    el.onclick=function(){trDir=el.dataset.dir;trResult=null;trInput='';render();var inp=document.getElementById('trInput');if(inp)inp.focus();};
+  });
+}
+
+// ===== TRANSLATE =====
+var trResult=null,trLoading=false,trDir='he2en',trInput='';
+
+function renderTranslate(){
+  var html='<div class="inner-hdr"><button class="back-btn" id="goBack">→</button>';
+  html+='<div class="inner-title"><span style="font-size:20px">🔄</span><h2 style="color:#4285F4">תרגום בלייב</h2></div>';
+  html+='<div style="width:36px"></div></div>';
+  html+='<div class="tr-box">';
+  html+='<div class="tr-lang-toggle">';
+  html+='<button class="tr-lang-btn'+(trDir==='he2en'?' on':'')+'" data-dir="he2en">עברית → אנגלית</button>';
+  html+='<button class="tr-lang-btn'+(trDir==='en2he'?' on':'')+'" data-dir="en2he">אנגלית → עברית</button>';
+  html+='</div>';
+  var ph=trDir==='he2en'?'כתוב בעברית...':'Type in English...';
+  var inputDir=trDir==='he2en'?'rtl':'ltr';
+  html+='<div class="tr-input-wrap">';
+  html+='<input class="tr-input" id="trInput" placeholder="'+ph+'" value="'+escHtml(trInput)+'" style="direction:'+inputDir+';text-align:'+(trDir==='he2en'?'right':'left')+'">';
+  html+='<button class="tr-btn" id="trGo">תרגם 🔄</button></div>';
+  if(trLoading){
+    html+='<div class="tr-loading"><span style="animation:pulseGlow 1s ease infinite;display:inline-block">🎯</span> מתרגם...</div>';
+  }else if(trResult){
+    var r=trResult;
+    html+='<div class="tr-result">';
+    html+='<div class="tr-eng eng">'+r.eng+'</div>';
+    html+='<div style="margin:8px 0">'+spkBtn(r.eng,'#4285F4',true)+'</div>';
+    if(r.hebrew) html+='<div style="font-size:18px;color:#fff;font-weight:700;margin-top:10px;padding-top:10px;border-top:1px solid #ffffff15">'+r.hebrew+'</div>';
+    html+='</div>';
+  }
+  html+='<div class="tr-note">התרגום מופעל על ידי Google Translate</div>';
+  html+='</div>';
+  return html;
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function doTranslate(){
+  var input=document.getElementById('trInput');
+  if(!input)return;
+  var txt=input.value.trim();
+  if(!txt)return;
+  trInput=txt;
+  trLoading=true;trResult=null;
+  render();
+  
+  var sl=trDir==='he2en'?'iw':'en';
+  var tl=trDir==='he2en'?'en':'iw';
+  var url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&dt=rm&q='+encodeURIComponent(txt);
+
+  fetch(url)
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var translated='';
+    if(data&&data[0]){
+      data[0].forEach(function(seg){
+        if(seg[0])translated+=seg[0];
+      });
+    }
+    var engText=trDir==='he2en'?translated:txt;
+    var hebrewText=trDir==='he2en'?txt:translated;
+    
+    trResult={eng:engText,hebrew:hebrewText};
+    trLoading=false;
+    render();
+    if(trResult&&trResult.eng){
+      setTimeout(function(){speak(trResult.eng);},300);
+    }
+  })
+  .catch(function(e){
+    console.error('Translate error:',e);
+    trResult={eng:'Translation error',hebrew:'נסה שוב'};
+    trLoading=false;
+    render();
+  });
+}
+
+// ===== START =====
+render();
+</script>
+</body>
+</html>
